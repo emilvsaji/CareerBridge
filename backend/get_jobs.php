@@ -1,0 +1,79 @@
+<?php
+require_once 'database.php';
+
+header('Content-Type: application/json');
+
+try {
+    $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
+    
+    if ($limit < 1) $limit = 10;
+    
+    $sql = "SELECT id, job_title, company_name, location, salary_min, salary_max, salary_unit, job_type, experience_level, posted_at, company_logo_path, skills FROM jobs ORDER BY posted_at DESC LIMIT ?";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $limit);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $jobs = [];
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $salary = "Not Disclosed";
+            if (!empty($row['salary_min']) || !empty($row['salary_max'])) {
+                $salary = '₹' . number_format($row['salary_min']) . ' - ₹' . number_format($row['salary_max']) . ' ' . $row['salary_unit'];
+            }
+            
+            $formatted_job = [
+                'id' => intval($row['id']),
+                'title' => htmlspecialchars($row['job_title']),
+                'company' => htmlspecialchars($row['company_name']),
+                'location' => htmlspecialchars($row['location']),
+                'salary' => $salary,
+                'type' => htmlspecialchars($row['job_type']),
+                'experience' => htmlspecialchars($row['experience_level']),
+                'posted' => time_ago($row['posted_at']),
+                'logo' => !empty($row['company_logo_path']) ? htmlspecialchars($row['company_logo_path']) : null,
+                'tags' => !empty($row['skills']) ? array_map('trim', explode(',', $row['skills'])) : []
+            ];
+            $jobs[] = $formatted_job;
+        }
+    }
+
+    echo json_encode($jobs);
+
+    $conn->close();
+
+} catch (Exception $e) {
+    
+    http_response_code(500); 
+    echo json_encode(['error' => $e->getMessage()]);
+}
+
+function time_ago($timestamp) {
+    $time_ago = strtotime($timestamp);
+    $current_time = time();
+    $time_difference = $current_time - $time_ago;
+    $seconds = $time_difference;
+    $minutes      = round($seconds / 60 );
+    $hours           = round($seconds / 3600);
+    $days          = round($seconds / 86400 );
+    $weeks          = round($seconds / 604800);
+    $months      = round($seconds / 2629440);
+    $years          = round($seconds / 31553280);
+    if($seconds <= 60) {
+        return "Just Now";
+    } else if($minutes <=60) {
+        return ($minutes==1) ? "one minute ago" : "$minutes minutes ago";
+    } else if($hours <=24) {
+        return ($hours==1) ? "an hour ago" : "$hours hrs ago";
+    } else if($days <= 7) {
+        return ($days==1) ? "yesterday" : "$days days ago";
+    } else if($weeks <= 4.3) { 
+        return ($weeks==1) ? "a week ago" : "$weeks weeks ago";
+    } else if($months <=12) {
+        return ($months==1) ? "a month ago" : "$months months ago";
+    } else {
+        return ($years==1) ? "one year ago" : "$years years ago";
+    }
+}
+?>
