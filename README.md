@@ -92,7 +92,7 @@ To run this project locally, you will need a server environment like XAMPP or WA
     $servername = "127.0.0.1";
     $username = "root";
     $password = "";
-    $dbname = "jobfinder";
+    $dbname = "careerbridge";
     ```
 
 5.  **Run the project:**
