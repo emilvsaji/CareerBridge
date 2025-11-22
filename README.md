@@ -74,7 +74,7 @@ To run this project locally, you will need a server environment like XAMPP or WA
 
 1.  **Clone the repository:**
     ```bash
-    gh repo clone JewelArimattom/JobFinder
+    gh repo clone emilvsaji/CareerBridge
     ```
 
 2.  **Set up the server:**
