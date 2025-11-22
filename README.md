@@ -82,8 +82,8 @@ To run this project locally, you will need a server environment like XAMPP or WA
 
 3.  **Database Setup:**
     - Open **phpMyAdmin** from your XAMPP/WAMP control panel.
-    - Create a new database named `jobfinder`.
-    - Import the provided `.sql` file into the `jobfinder` database to create the necessary tables (`users`, `jobs`, `applications`, etc.).
+    - Create a new database named `careerbridge`.
+    - Import the provided `.sql` file into the `careerbridge` database to create the necessary tables (`users`, `jobs`, `applications`, etc.).
 
 4.  **Configure Database Connection:**
     - Open each PHP file in the `backend/` directory.
