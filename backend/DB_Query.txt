@@ -39,7 +39,6 @@ CREATE TABLE `applications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
--- Step 1: Create the `users` table (without the user_type column)
 -- This table will store the core information for every user.
 
 CREATE TABLE `users` (
